@@ -1,0 +1,4 @@
+node_modules/
+.idea/
+CLAUDE_GUIDE.md
+.DS_Store

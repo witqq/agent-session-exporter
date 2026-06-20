@@ -1,0 +1,31 @@
+{
+  "name": "claude-exporter",
+  "version": "1.0.0",
+  "description": "CLI utility for exporting Claude Code sessions to Markdown",
+  "type": "module",
+  "bin": {
+    "claude-export": "./claude-export.js"
+  },
+  "scripts": {
+    "link": "npm link",
+    "unlink": "npm unlink -g"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "export",
+    "sessions",
+    "cli",
+    "markdown"
+  ],
+  "author": "witqq",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/witqq/claude-exporter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/witqq/claude-exporter/issues"
+  },
+  "homepage": "https://github.com/witqq/claude-exporter#readme"
+}
