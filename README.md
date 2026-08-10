@@ -1,75 +1,95 @@
-# claude-exporter
+# Agent Session Exporter
 
-CLI utility for exporting [Claude Code](https://docs.anthropic.com/en/docs/claude-code) sessions to Markdown.
+CLI utility for exporting Claude Code and Codex session transcripts to readable Markdown.
 
-It reads the session transcripts Claude Code stores under `~/.claude/projects/`
-(and `~/.claude-sec/projects/`) and renders them as readable Markdown — user and
-assistant messages with timestamps, compact summaries, system events, and
-`AskUserQuestion` prompts with their answer options.
+It discovers:
+
+- Claude Code sessions under `~/.claude/projects/` and `~/.claude-sec/projects/`;
+- Codex sessions under `~/.codex/sessions/` and `~/.codex/archived_sessions/`.
+
+Both sources use the same project, session selection, listing, direct-file export, and output interface. Routine tool calls and private reasoning records are omitted; user/assistant messages, context summaries, system events, and interactive questions/answers are retained.
 
 ## Install
 
 ```bash
 git clone https://github.com/witqq/claude-exporter.git
 cd claude-exporter
-npm link        # exposes the `claude-export` command globally
+npm link
 ```
 
-Requires Node.js (uses ES modules, no external dependencies).
+Node.js 20 or newer is recommended. The project uses ES modules and has no runtime dependencies.
+
+`npm link` exposes two commands:
+
+- `session-export` — universal command;
+- `claude-export` — backward-compatible alias with the same options.
 
 ## Usage
 
 ```bash
-# List all projects that have sessions
-claude-export --list
+# List projects from both sources
+session-export --list
 
-# List sessions for a project (by its working-directory path)
-claude-export ~/projects/my-app --list
+# Limit discovery to one source
+session-export --source codex --list
+session-export --source claude --list
 
-# Export the latest session of a project to stdout
-claude-export ~/projects/my-app
+# List all Claude and Codex sessions for a project
+session-export ~/projects/my-app --list
 
-# Export a specific session by id (partial match works)
-claude-export ~/projects/my-app -s 46f22
+# Export the newest session across both sources
+session-export ~/projects/my-app
 
-# Export to a file
-claude-export ~/projects/my-app -s 46f22 -o session.md
+# Export the newest Codex session only
+session-export ~/projects/my-app --source codex
 
-# Export a session file directly
-claude-export ~/.claude/projects/-Users-me-projects-my-app/<id>.jsonl -o out.md
+# Select a session by partial ID and write a file
+session-export ~/projects/my-app --session 46f22 --output session.md
+
+# Positional session IDs remain supported
+session-export ~/projects/my-app 46f22 -o session.md
+
+# Auto-detect a direct Claude or Codex JSONL file
+session-export /path/to/session.jsonl -o session.md
+
+# Existing scripts can keep using the legacy command
+claude-export ~/projects/my-app --source claude
 ```
 
 ### Options
 
 | Flag | Description |
 |------|-------------|
-| `-l`, `--list` | List all projects, or sessions of a given project |
-| `-s`, `--session <id>` | Session id (partial match, e.g. `46f22`) |
-| `-o`, `--output <file>` | Output file (default: stdout) |
+| `--source <auto\|claude\|codex>` | Source filter; defaults to `auto` |
+| `-l`, `--list` | List all projects, or sessions for a project |
+| `-s`, `--session <id>` | Session ID; partial matches work |
+| `-o`, `--output <file>` | Output file; defaults to stdout |
 | `-h`, `--help` | Show help |
 
-## How project paths map to session folders
+## Discovery behavior
 
-Claude Code stores sessions in a folder named after the project's absolute path,
-replacing both `/` and `.` with `-`:
+Claude Code encodes a project's absolute path in its session directory name. The exporter reads session metadata to recover the original `cwd`, while retaining the historical encoded-path fallback.
 
+Codex stores rollouts by date rather than by project. The exporter recursively scans active and archived rollout directories, reads `session_meta.cwd`, groups sessions by the real project path, and deduplicates active/archived copies by source and session ID.
+
+Set `CODEX_HOME` when Codex state is stored outside `~/.codex`.
+
+## Exported content
+
+- Claude compact summaries and Codex compaction records when present;
+- user and assistant messages with timestamps and model names;
+- Claude `AskUserQuestion` and Codex `request_user_input` prompts and answers;
+- relevant system events such as aborted Codex turns.
+
+The exporter intentionally omits routine tool calls, tool outputs, developer/system prompts, and encrypted/private reasoning records.
+
+## Development
+
+```bash
+npm test
 ```
-/Users/me/projects/my-app  ->  -Users-me-projects-my-app
-/Users/me/.config          ->  -Users-me--config   (hidden dir: . -> -)
-```
 
-`claude-export` resolves this automatically, so you can pass the real project
-path and it finds the matching session folder.
-
-## What gets exported
-
-- Compact summaries from previous context windows
-- User / assistant messages with timestamps
-- System events (compact, clear)
-- `AskUserQuestion` questions, their answer options, and the chosen answer
-
-Routine tool calls (file reads, shell commands, etc.) are intentionally omitted
-to keep exports focused and readable.
+Tests use temporary Claude and Codex stores and do not read or modify real sessions.
 
 ## License
 

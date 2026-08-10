@@ -1,18 +1,21 @@
 {
   "name": "claude-exporter",
-  "version": "1.0.0",
-  "description": "CLI utility for exporting Claude Code sessions to Markdown",
+  "version": "1.1.0",
+  "description": "CLI utility for exporting Claude Code and Codex sessions to Markdown",
   "type": "module",
   "bin": {
-    "claude-export": "./claude-export.js"
+    "claude-export": "./claude-export.js",
+    "session-export": "./claude-export.js"
   },
   "scripts": {
     "link": "npm link",
+    "test": "node --test",
     "unlink": "npm unlink -g"
   },
   "keywords": [
     "claude",
     "claude-code",
+    "codex",
     "export",
     "sessions",
     "cli",
