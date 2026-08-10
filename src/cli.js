@@ -17,7 +17,6 @@ Export Claude Code and Codex sessions to Markdown.
 USAGE:
   session-export [options]
   session-export <project-path> [session-id] [options]
-  claude-export <project-path> [session-id] [options]
 
 OPTIONS:
   --source <auto|claude|codex>  Session source (default: auto)
@@ -32,7 +31,6 @@ EXAMPLES:
   session-export ~/projects/my-app --list
   session-export ~/projects/my-app --source codex
   session-export ~/projects/my-app -s 46f22 -o session.md
-  claude-export ~/projects/my-app --source claude
   session-export /path/to/rollout.jsonl -o session.md
 `);
 }

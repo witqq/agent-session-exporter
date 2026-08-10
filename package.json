@@ -1,11 +1,10 @@
 {
-  "name": "claude-exporter",
-  "version": "1.1.0",
+  "name": "agent-session-exporter",
+  "version": "2.0.0",
   "description": "CLI utility for exporting Claude Code and Codex sessions to Markdown",
   "type": "module",
   "bin": {
-    "claude-export": "./claude-export.js",
-    "session-export": "./claude-export.js"
+    "session-export": "./session-export.js"
   },
   "scripts": {
     "link": "npm link",
@@ -25,10 +24,10 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/witqq/claude-exporter.git"
+    "url": "git+https://github.com/witqq/agent-session-exporter.git"
   },
   "bugs": {
-    "url": "https://github.com/witqq/claude-exporter/issues"
+    "url": "https://github.com/witqq/agent-session-exporter/issues"
   },
-  "homepage": "https://github.com/witqq/claude-exporter#readme"
+  "homepage": "https://github.com/witqq/agent-session-exporter#readme"
 }

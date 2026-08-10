@@ -12,17 +12,14 @@ Both sources use the same project, session selection, listing, direct-file expor
 ## Install
 
 ```bash
-git clone https://github.com/witqq/claude-exporter.git
-cd claude-exporter
+git clone https://github.com/witqq/agent-session-exporter.git
+cd agent-session-exporter
 npm link
 ```
 
 Node.js 20 or newer is recommended. The project uses ES modules and has no runtime dependencies.
 
-`npm link` exposes two commands:
-
-- `session-export` — universal command;
-- `claude-export` — backward-compatible alias with the same options.
+`npm link` exposes the universal `session-export` command.
 
 ## Usage
 
@@ -52,8 +49,6 @@ session-export ~/projects/my-app 46f22 -o session.md
 # Auto-detect a direct Claude or Codex JSONL file
 session-export /path/to/session.jsonl -o session.md
 
-# Existing scripts can keep using the legacy command
-claude-export ~/projects/my-app --source claude
 ```
 
 ### Options
