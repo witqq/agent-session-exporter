@@ -8,6 +8,10 @@ import {
   sessionsForProject,
 } from './exporter.js';
 
+const packageManifest = JSON.parse(
+  fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8'),
+);
+
 function showHelp() {
   console.log(`
 Agent Session Exporter
@@ -23,6 +27,7 @@ OPTIONS:
   -l, --list                    List projects or project sessions
   -s, --session <id>            Session ID (partial match)
   -o, --output <file>           Output file path (default: stdout)
+  -v, --version                 Show version
   -h, --help                    Show this help
 
 EXAMPLES:
@@ -92,6 +97,11 @@ async function writeExport(session, outputFile) {
 }
 
 export async function runCli(args = process.argv.slice(2), options = {}) {
+  if (args.includes('-v') || args.includes('--version')) {
+    console.log(packageManifest.version);
+    return;
+  }
+
   if (args.includes('-h') || args.includes('--help')) {
     showHelp();
     return;
