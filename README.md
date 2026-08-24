@@ -36,6 +36,18 @@ Node.js 20 or newer is required. The project uses ES modules and has no runtime 
 
 `npm link` exposes the universal `session-export` command.
 
+## Agent skill
+
+The repository includes the cross-agent [`restore-context`](skills/restore-context/SKILL.md) skill for
+Claude Code and Codex. Install it with a compatible skill manager:
+
+```bash
+npx skills add witqq/agent-session-exporter --skill restore-context
+```
+
+The skill runs the matching published CLI through `npx`, keeps transcript exports outside the project, and
+requires explicit authorization before an exported transcript may be committed, uploaded, or published.
+
 ## Usage
 
 ```bash

@@ -14,6 +14,8 @@ const expectedFiles = [
   'docs/RELEASE.md',
   'package.json',
   'session-export.js',
+  'skills/restore-context/SKILL.md',
+  'skills/restore-context/agents/openai.yaml',
   'src/cli.js',
   'src/exporter.js',
 ];

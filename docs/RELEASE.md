@@ -29,5 +29,9 @@ git tag -a v2.0.1 -m "agent-session-exporter 2.0.1"
 git push origin v2.0.1
 ```
 
+Before tagging, require `skills/restore-context/SKILL.md` metadata and its pinned `agent-session-exporter`
+command to match the package version. Validate the skill with the Codex `quick_validate.py` validator and
+confirm that a skill manager discovers `restore-context` from the repository.
+
 The workflow rejects malformed tags, a tag/version mismatch, or a tag whose commit is not contained in
 `origin/main`. npm also rejects an already published version, so releases remain immutable.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Restore Context"
+  short_description: "Restore Claude or Codex session context"
+  default_prompt: "Use $restore-context to recover the latest relevant Claude or Codex session for this project."

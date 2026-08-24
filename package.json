@@ -1,6 +1,6 @@
 {
   "name": "agent-session-exporter",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "CLI utility for exporting Claude Code and Codex sessions to Markdown",
   "type": "module",
   "bin": {
@@ -10,6 +10,7 @@
     "session-export.js",
     "src",
     "docs/RELEASE.md",
+    "skills/restore-context",
     "README.md",
     "LICENSE"
   ],
