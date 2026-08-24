@@ -11,13 +11,28 @@ Both sources use the same project, session selection, listing, direct-file expor
 
 ## Install
 
+Install the CLI from npm:
+
+```bash
+npm install --global agent-session-exporter
+session-export --help
+```
+
+You can also run it without a global installation:
+
+```bash
+npx --yes agent-session-exporter --list
+```
+
+For local development, clone and link the checkout:
+
 ```bash
 git clone https://github.com/witqq/agent-session-exporter.git
 cd agent-session-exporter
 npm link
 ```
 
-Node.js 20 or newer is recommended. The project uses ES modules and has no runtime dependencies.
+Node.js 20 or newer is required. The project uses ES modules and has no runtime dependencies.
 
 `npm link` exposes the universal `session-export` command.
 
@@ -59,6 +74,7 @@ session-export /path/to/session.jsonl -o session.md
 | `-l`, `--list` | List all projects, or sessions for a project |
 | `-s`, `--session <id>` | Session ID; partial matches work |
 | `-o`, `--output <file>` | Output file; defaults to stdout |
+| `-v`, `--version` | Show the installed package version |
 | `-h`, `--help` | Show help |
 
 ## Discovery behavior
@@ -82,7 +98,14 @@ The exporter intentionally omits routine tool calls, tool outputs, developer/sys
 
 ```bash
 npm test
+npm run pack:check
 ```
+
+`pack:check` verifies the complete npm tarball inventory, installs that tarball into an isolated temporary
+prefix, and runs the installed `session-export` executable.
+
+Maintainers publish releases through npm Trusted Publishing. See
+[`docs/RELEASE.md`](docs/RELEASE.md) for the one-time configuration and tag-based release process.
 
 Tests use temporary Claude and Codex stores and do not read or modify real sessions.
 
