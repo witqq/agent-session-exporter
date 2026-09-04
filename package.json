@@ -1,8 +1,9 @@
 {
   "name": "agent-session-exporter",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "CLI utility for exporting Claude Code and Codex sessions to Markdown",
   "type": "module",
+  "packageManager": "npm@11.19.0",
   "bin": {
     "session-export": "./session-export.js"
   },
@@ -18,6 +19,8 @@
     "link": "npm link",
     "test": "node --test",
     "pack:check": "node scripts/check-package.mjs",
+    "check:workflows": "node scripts/check-workflows.mjs",
+    "verify": "npm test && npm run check:workflows && npm run pack:check",
     "prepack": "npm test",
     "unlink": "npm unlink -g"
   },
@@ -33,7 +36,7 @@
   "author": "witqq",
   "license": "ISC",
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=24.20.0"
   },
   "publishConfig": {
     "access": "public"
@@ -45,5 +48,8 @@
   "bugs": {
     "url": "https://github.com/witqq/agent-session-exporter/issues"
   },
-  "homepage": "https://github.com/witqq/agent-session-exporter#readme"
+  "homepage": "https://github.com/witqq/agent-session-exporter#readme",
+  "devDependencies": {
+    "yaml": "2.9.0"
+  }
 }
