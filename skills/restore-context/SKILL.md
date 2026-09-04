@@ -3,9 +3,9 @@ name: restore-context
 description: Restore working context from previous Claude Code or Codex sessions by discovering, selecting, exporting, and summarizing local transcripts with agent-session-exporter. Use after a session restart, migration, compaction, or handoff, or when the user invokes $restore-context or /restore-context with an optional source or session ID.
 license: ISC
 metadata:
-  version: '2.0.1'
+  version: '2.1.0'
   homepage: https://github.com/witqq/agent-session-exporter
-  compatibility: Requires Node.js 20 or newer, npm/npx, registry access for the first npx run, and a local Claude Code or Codex session store.
+  compatibility: Requires Node.js 24.20.0 or newer, npm/npx, registry access for the first npx run, and a local Claude Code or Codex session store.
 ---
 
 # Restore Context
@@ -20,7 +20,7 @@ paths, and tool results.
 2. List sessions from both sources with the release pinned in this skill:
 
    ```bash
-   npx --yes agent-session-exporter@2.0.1 <project-path> --list
+   npx --yes agent-session-exporter@2.1.0 <project-path> --list
    ```
 
 3. Add `--source claude` or `--source codex` when the user requested one source. Do not silently switch
@@ -36,7 +36,7 @@ paths, and tool results.
 2. Export the selected transcript:
 
    ```bash
-   npx --yes agent-session-exporter@2.0.1 <project-path> \
+   npx --yes agent-session-exporter@2.1.0 <project-path> \
      --source <claude|codex> --session <id> \
      --output <temporary-directory>/session-context.md
    ```

@@ -2,6 +2,9 @@
 
 CLI utility for exporting Claude Code and Codex session transcripts to readable Markdown.
 
+[![npm](https://img.shields.io/npm/v/agent-session-exporter.svg)](https://www.npmjs.com/package/agent-session-exporter)
+[![CI](https://github.com/witqq/agent-session-exporter/actions/workflows/ci.yml/badge.svg)](https://github.com/witqq/agent-session-exporter/actions/workflows/ci.yml)
+
 It discovers:
 
 - Claude Code sessions under `~/.claude/projects/` and `~/.claude-sec/projects/`;
@@ -32,7 +35,7 @@ cd agent-session-exporter
 npm link
 ```
 
-Node.js 20 or newer is required. The project uses ES modules and has no runtime dependencies.
+Node.js 24.20.0 or newer is required. Development, CI and release checks use npm 11.19.0. The project uses ES modules and has no runtime dependencies.
 
 `npm link` exposes the universal `session-export` command.
 
@@ -110,14 +113,17 @@ The exporter intentionally omits routine tool calls, tool outputs, developer/sys
 
 ```bash
 npm test
+npm run check:workflows
 npm run pack:check
+npm run verify
 ```
 
 `pack:check` verifies the complete npm tarball inventory, installs that tarball into an isolated temporary
 prefix, and runs the installed `session-export` executable.
 
 Maintainers publish releases through npm Trusted Publishing. See
-[`docs/RELEASE.md`](docs/RELEASE.md) for the one-time configuration and tag-based release process.
+[`docs/RELEASE.md`](docs/RELEASE.md) for the immutable-asset release process. GitHub Actions publishes the
+single accepted GitHub Release tarball without checking out source, installing dependencies, or rebuilding it.
 
 Tests use temporary Claude and Codex stores and do not read or modify real sessions.
 
