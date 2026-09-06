@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Annotated release tag, for example v2.1.0
+        description: Annotated release tag, for example v2.1.1
         required: true
         type: string
       sha256:
@@ -34,7 +34,7 @@ jobs:
           package-manager-cache: false
 
       - name: Install an OIDC-capable npm CLI
-        run: npm install --global npm@11.19.1
+        run: npm install --global npm@12.0.2
 
       - name: Verify and publish the accepted GitHub Release asset
         env:
@@ -63,6 +63,15 @@ jobs:
           compare_json="${RUNNER_TEMP}/compare.json"
           tarball="${RUNNER_TEMP}/${asset_name}"
           manifest="${RUNNER_TEMP}/package.json"
+
+          parse_registry_url() {
+            node -e '
+              const parsed = JSON.parse(process.argv[1]);
+              const values = Array.isArray(parsed) ? parsed : [parsed];
+              if (values.length !== 1 || typeof values[0] !== "string" || !values[0].startsWith("https://")) throw new Error("registry tarball URL is invalid");
+              process.stdout.write(values[0]);
+            ' "$1"
+          }
 
           gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${tag}" > "${ref_json}"
           annotated_tag_sha="$(node -e '
@@ -116,7 +125,33 @@ jobs:
             const fs = require("node:fs");
             const [file, expectedVersion, expectedRepository] = process.argv.slice(1);
             const manifest = JSON.parse(fs.readFileSync(file, "utf8"));
-            if (manifest.name !== "agent-session-exporter" || manifest.version !== expectedVersion || manifest.repository?.url !== expectedRepository || manifest.bin?.["session-export"] !== "./session-export.js") throw new Error("packed package identity is invalid");
+            if (manifest.name !== "agent-session-exporter" || manifest.version !== expectedVersion || manifest.repository?.url !== expectedRepository || manifest.bin?.["session-export"] !== "./session-export.js" || manifest.engines?.node !== ">=24.20.0" || manifest.publishConfig?.access !== "public") throw new Error("packed package identity is invalid");
           ' "${manifest}" "${version}" "git+https://github.com/${GITHUB_REPOSITORY}.git"
 
-          npm publish --access public "${asset_url}"
+          if existing_response="$(npm view "agent-session-exporter@${version}" dist.tarball --json 2>/dev/null)"; then
+            registry_url="$(parse_registry_url "${existing_response}")"
+            registry_tarball="${RUNNER_TEMP}/registry-preflight.tgz"
+            curl --fail --location --proto '=https' --tlsv1.2 --output "${registry_tarball}" "${registry_url}"
+            registry_sha256="$(shasum -a 256 "${registry_tarball}" | cut -d ' ' -f 1)"
+            test "${registry_sha256}" = "${expected_sha256}"
+            echo "agent-session-exporter@${version} already contains the accepted bytes; skipping"
+          else
+            npm publish --access public "${tarball}"
+          fi
+
+          registry_response=""
+          for attempt in {1..24}; do
+            if registry_response="$(npm view "agent-session-exporter@${version}" dist.tarball --json 2>/dev/null)"; then
+              break
+            fi
+            if [[ "${attempt}" = 24 ]]; then
+              echo "agent-session-exporter@${version} did not become visible in the registry" >&2
+              exit 1
+            fi
+            sleep 5
+          done
+          registry_url="$(parse_registry_url "${registry_response}")"
+          registry_tarball="${RUNNER_TEMP}/registry-final.tgz"
+          curl --fail --location --proto '=https' --tlsv1.2 --output "${registry_tarball}" "${registry_url}"
+          registry_sha256="$(shasum -a 256 "${registry_tarball}" | cut -d ' ' -f 1)"
+          test "${registry_sha256}" = "${expected_sha256}"
