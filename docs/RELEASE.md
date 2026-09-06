@@ -4,7 +4,7 @@ A release binds one locally accepted npm tarball to one annotated Git tag, one G
 
 ## Runtime and trusted publisher
 
-Use Node.js 24.20.0 and npm 11.19.0 or newer. `.nvmrc`, `.node-version`, `engines` and GitHub Actions use the same Node release.
+Use Node.js 24.20.0 and npm 12.0.2. `.nvmrc`, `.node-version`, `engines`, `packageManager` and GitHub Actions define the same toolchain.
 
 The npm trusted publisher for `agent-session-exporter` must use:
 
@@ -44,6 +44,6 @@ Tags and release assets are immutable. Never move a public tag or replace an ass
 
 ## Publish and verify
 
-Dispatch `.github/workflows/publish-npm.yml` from `main` with the tag and accepted SHA-256. The workflow requires the one expected Release asset, matches GitHub's stored digest, downloads it over verified HTTPS, recomputes SHA-256, checks package/version/repository/bin identity, and publishes the asset URL through OIDC.
+Dispatch `.github/workflows/publish-npm.yml` from `main` with the tag and accepted SHA-256. The workflow requires an annotated tag contained in the dispatched revision and the one expected Release asset. It matches GitHub's stored digest, downloads the asset over verified HTTPS, recomputes SHA-256, checks package/version/repository/bin/runtime identity and publishes that local verified tarball through OIDC. A retry accepts an existing npm version only when its registry tarball has the same digest, and every successful run verifies the final registry bytes.
 
 The release is complete only when npm `latest` equals the released version, npm records provenance, the registry tarball SHA-256 matches the GitHub asset, and a new empty consumer can install and run the published `session-export --version` and `session-export --help` commands.

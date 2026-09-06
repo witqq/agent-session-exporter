@@ -24,7 +24,7 @@ assertStepUses(verify, checkout);
 assertStepUses(verify, setupNode);
 assertNode24(verify);
 for (const command of [
-  'npm install --global npm@11.19.0',
+  'npm install --global npm@12.0.2',
   'npm ci --no-audit --no-fund',
   'npm run verify',
 ]) assertStepRun(verify, command);
@@ -41,7 +41,7 @@ assertStepUses(publication, setupNode);
 assertNode24(publication);
 const runs = steps(publication).map(step => step.run).filter(Boolean).join('\n');
 for (const required of [
-  'npm install --global npm@11.19.1',
+  'npm install --global npm@12.0.2',
   'git/ref/tags/${tag}',
   'ref.object?.type !== "tag"',
   'comparison.merge_base_commit?.sha !== expectedBase',
@@ -51,9 +51,30 @@ for (const required of [
   'crypto.createHash("sha256")',
   'manifest.name !== "agent-session-exporter"',
   'manifest.bin?.["session-export"] !== "./session-export.js"',
-  'npm publish --access public "${asset_url}"',
+  'manifest.engines?.node !== ">=24.20.0"',
+  'parse_registry_url()',
+  'Array.isArray(parsed) ? parsed : [parsed]',
+  'registry-preflight.tgz',
+  'already contains the accepted bytes; skipping',
+  'npm publish --access public "${tarball}"',
+  'for attempt in {1..24}',
+  'did not become visible in the registry',
+  'sleep 5',
+  'registry-final.tgz',
 ]) assert.ok(runs.includes(required), `publication must enforce ${required}`);
-for (const forbidden of ['actions/checkout@', 'NPM_TOKEN', 'NODE_AUTH_TOKEN', 'npm ci', 'npm test', 'npm pack']) {
+assert.ok(
+  runs.indexOf('registry-preflight.tgz') < runs.indexOf('npm publish --access public "${tarball}"'),
+  'publication must check an existing registry version before publishing',
+);
+for (const forbidden of [
+  'actions/checkout@',
+  'NPM_TOKEN',
+  'NODE_AUTH_TOKEN',
+  'npm ci',
+  'npm test',
+  'npm pack',
+  'npm publish --access public "${asset_url}"',
+]) {
   assert.ok(!publishSource.includes(forbidden), `publication must exclude ${forbidden}`);
 }
 assertPinnedActions(publish, 'publication workflow');

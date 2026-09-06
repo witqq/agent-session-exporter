@@ -35,7 +35,7 @@ cd agent-session-exporter
 npm link
 ```
 
-Node.js 24.20.0 or newer is required. Development, CI and release checks use npm 11.19.0. The project uses ES modules and has no runtime dependencies.
+Node.js 24.20.0 or newer is required. Development, CI and release checks use npm 12.0.2. The project uses ES modules and has no runtime dependencies.
 
 `npm link` exposes the universal `session-export` command.
 

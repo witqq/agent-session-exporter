@@ -33,7 +33,10 @@ const packOutput = runNpm(
   ['pack', '--json', '--ignore-scripts', '--pack-destination', candidateRoot],
   { cwd: repositoryRoot, encoding: 'utf8' },
 );
-const packResults = JSON.parse(packOutput);
+const parsedPackOutput = JSON.parse(packOutput);
+const packResults = Array.isArray(parsedPackOutput)
+  ? parsedPackOutput
+  : Object.values(parsedPackOutput);
 assert.equal(packResults.length, 1, 'npm pack must return exactly one package');
 const [packResult] = packResults;
 assert.equal(packResult.name, manifest.name);
