@@ -50,6 +50,6 @@
   },
   "homepage": "https://github.com/witqq/agent-session-exporter#readme",
   "devDependencies": {
-    "yaml": "2.9.0"
+    "yaml": "2.9.1"
   }
 }
